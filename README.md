@@ -16,4 +16,3 @@ This script can easily unpack a archive and try to fix the charset.
 	Sample:
 	uany.sh something.tar.gz.xz target
 	   - Unpacket something.tar.gz.xz
-
