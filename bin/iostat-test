@@ -1,0 +1,19 @@
+#!/bin/bash
+
+[ $# -ne 2 ] || exit 1
+log=$1
+ip=192.168.122.218
+
+ssh-keygen -R $ip
+ssh-copy-id $ip
+scp -rC /data/sources/data_collector $ip:
+scp -C /data/git/linux_pt_7/0_Working_Lib/PT_サービス/getPerfInfoの依頼/2.5-4/FJSVgetperfinfo-2.5-4_src.tar.gz $ip:
+ssh $ip 'tar -xf FJSVgetperfinfo-2.5-4_src.tar.gz && rm -rf /tmp/perf* && FJSVgetperfinfo-2.5/bin/getPerfInfo.sh 1 1 && cat /etc/*release*'
+
+echo check the repo
+ssh $ip
+
+ssh $ip 'yum install -y ruby sqlite3 && rm -f test.db && data_collector/perfinfo2db /tmp/perf* test.db'
+if ssh $ip 'sqlite3 test.db "SELECT * FROM IO_IOSTAT;"' > /mnt/win7data/iostat/${log}.txt; then
+ssh $ip 'halt -p && exit 0'
+fi
