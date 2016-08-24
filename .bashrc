@@ -21,7 +21,7 @@ alias xs='cd'
 alias sl='ls'
 alias pkill='pkill -c'
 alias virt-manager='virt-manager --spice-disable-auto-usbredir'
-alias rebash='echo $(sed '"'"'s/\x0/" "/g;s/^/exec "/;s/ "$//'"'"' /proc/$$/cmdline )'
+alias rebash='eval $(sed '"'"'s/\x0/" "/g;s/^/exec "/;s/ "$//'"'"' /proc/$$/cmdline )'
 
 #PS1='[\u@\h \W]\$ '
 
