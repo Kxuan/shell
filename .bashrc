@@ -16,11 +16,13 @@ alias mv='mv -v'
 alias l='ls -Alh'
 alias ls='ls --color=auto'
 alias rm='rm --verbose'
+alias pkill='pkill -c'
+alias virt-manager='virt-manager --spice-disable-auto-usbredir'
+
+#Intelligent error correction
 alias ks='ls'
 alias xs='cd'
 alias sl='ls'
-alias pkill='pkill -c'
-alias virt-manager='virt-manager --spice-disable-auto-usbredir'
 
 #PS1='[\u@\h \W]\$ '
 

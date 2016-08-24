@@ -14,9 +14,13 @@ Warning: The pacman cache will be erased, regardless upgrade successful or not.
                 return 2
             fi
             ;;
-        i|in|inst|install|a|add)
+        u|up|update)
+            sudo pacman -Sy;;
+        i|inst|install|a|add)
             sudo pacman -S --color=always --noconfirm $@ ;;
-        r|re|remove|u|un|unst|uninstall)
+        q|query)
+            pacman -Si $@;;
+        r|re|remove|un|uninstall)
             sudo pacman -Rsc --color=always $@ ;;
         s|se|search)
             pacsearch $@ ;;
@@ -50,9 +54,9 @@ __pkg_complete() {
     case $action in 
         iu|su|systemupgrade|sys);;
         f|file|path|filename);;
-        i|in|inst|install|a|add|s|se|search|l|list)
+        i|inst|install|a|add|s|se|search|l|list)
             _pacman_pkg Slq;;
-        r|re|remove|u|un|unst|uninstall)
+        r|re|remove|un|uninstall)
             _pacman_pkg Qqe;;
     esac 
     return 0
