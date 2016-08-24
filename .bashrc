@@ -21,7 +21,6 @@ alias xs='cd'
 alias sl='ls'
 alias pkill='pkill -c'
 alias virt-manager='virt-manager --spice-disable-auto-usbredir'
-alias rebash='eval $(sed '"'"'s/\x0/" "/g;s/^/exec "/;s/ "$//'"'"' /proc/$$/cmdline )'
 
 #PS1='[\u@\h \W]\$ '
 
@@ -36,7 +35,7 @@ PROMPT_COMMAND="history -a; $PROMPT_COMMAND"
 EDITOR='/usr/bin/vim'
 
 __include_functions() {
-    for i in ~/bin/*.sh; do
+    for i in ~/bin/helper/*.sh; do
         if [[ -x $i ]]; then
             . $i
         fi

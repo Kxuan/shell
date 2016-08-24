@@ -24,7 +24,7 @@ __GO_search() {
             return 0
         fi
     done < $GOTO_PATH_HINTS_FILE
-    return 0
+    return 1
 }
 
 go() {
