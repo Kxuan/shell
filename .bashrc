@@ -35,6 +35,7 @@ PROMPT_COMMAND="history -a; $PROMPT_COMMAND"
 # add some other useful path to bash cd command
 # Use vim as default text editor
 EDITOR='/usr/bin/vim'
+VISUAL='/usr/bin/vim'
 
 __include_functions() {
     for i in ~/bin/helper/*.sh; do

@@ -18,7 +18,7 @@ Warning: The pacman cache will be erased, regardless upgrade successful or not.
             sudo pacman -Sy;;
         i|inst|install|a|add)
             sudo pacman -S --color=always --noconfirm $@ ;;
-        q|query)
+        if|info)
             pacman -Si $@;;
         r|re|remove|un|uninstall)
             sudo pacman -Rsc --color=always $@ ;;
@@ -33,7 +33,7 @@ Warning: The pacman cache will be erased, regardless upgrade successful or not.
 }
 
 __pkg_complete() {
-    local __pkg_actions=(iu su systemupgrade sys i in inst install a add r re remove u un unst uninstall s se search f file path filename l list)
+    local __pkg_actions=(iu su systemupgrade sys u up update i inst install a add if info r re remove un uninstall s se search f file path filename l list)
     local cur=$2
     COMPREPLY=()
 
@@ -54,7 +54,7 @@ __pkg_complete() {
     case $action in 
         iu|su|systemupgrade|sys);;
         f|file|path|filename);;
-        i|inst|install|a|add|s|se|search|l|list)
+        i|inst|install|a|add|s|se|search|l|list|if|info)
             _pacman_pkg Slq;;
         r|re|remove|un|uninstall)
             _pacman_pkg Qqe;;
