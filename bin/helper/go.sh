@@ -42,51 +42,53 @@ _MARKDIR_get_path_from_hint() {
     done < $MARKDIR_HINTS_FILE
     return 1
 }
+_MARKDIR_pushd() {
+    local gohc=${#MARKDIR_history[*]}
+    MARKDIR_history[$gohc]=$1
+}
+_MARKDIR_popd() {
+    local gohc=${#MARKDIR_history[*]}
+    let gohc-=1
+    if [[ $gohc -lt 0 ]]; then
+        return 1
+    fi
+    \cd ${MARKDIR_history[gohc]}
+    unset MARKDIR_history[gohc]
+}
 
 markdir_go() {
     local hint=$1
-    local go_dist
+    local target_dir
     
-    if ! go_dist=$(_MARKDIR_search $hint); then
-        # hint is not found
-
-        # if hint is a directory, just go there.
-        [[ -d $hint ]] && \cd $hint
-        return
+    if ! target_dir=$(_MARKDIR_search $hint); then
+        # hint is not found. try to change directory to $hint
+        target_dir=$hint
     fi
 
-    # we found a mached hint record. try to go there.
-    if \cd $go_dist; then
-        local gohc=${#MARKDIR_history[*]}
-        MARKDIR_history[$gohc]=$OLDPWD
-    fi
-    return
+    \cd $target_dir && _MARKDIR_pushd $OLDPWD
 }
 markdir_markhere() {
     local hint=$1
-    local go_dist
+    local target_dir
 
     if [[ -z $hint ]] ;then
         echo "Require a hint." >&2
         return 1
     fi
     
-    if go_dist=$(_MARKDIR_get_path_from_hint $hint); then
-        echo "\"$hint\" is already taken by \"$go_dist\"" >&2
+    if target_dir=$(_MARKDIR_get_path_from_hint $hint); then
+        echo "\"$hint\" is already taken by \"$target_dir\"" >&2
         return 1
     fi
 
     echo "$hint $PWD" >> $MARKDIR_HINTS_FILE
 }
 markdir_back() {
-    local gohc=${#MARKDIR_history[*]}
-    let gohc-=1
-    if [[ $gohc -lt 0 ]]; then
+    if ! _MARKDIR_popd ;then
         echo "Go history is empty" >&2
         return 1
     fi
-    \cd ${MARKDIR_history[gohc]}
-    unset MARKDIR_history[gohc]
+    return 0
 }
 markdir_setup_alias() {
     local alias_go=$1
