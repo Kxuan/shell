@@ -1,6 +1,30 @@
 #!/bin/bash
 
 [[ $- != *i* ]] && return
+#PS1='[\u@\h \W]\$ '
+
+# Unlimit bash history size
+HISTSIZE=-1
+# remove spaces from bash history
+HISTCONTROL=ignorespace
+# apply history immediately
+PROMPT_COMMAND="history -a; $PROMPT_COMMAND"
+# add some other useful path to bash cd command
+# Use vim as default text editor
+export EDITOR='/usr/bin/vim'
+export VISUAL='/usr/bin/vim'
+
+__bash_load_helpers() {
+    local i
+    for i in ~/bin/helper/*.sh; do
+        if [[ -x $i ]]; then
+            . $i
+        fi
+    done
+}
+__bash_load_helpers
+unset __bash_load_helpers
+
 alias ..='cd ..'
 alias make='make -j4'
 alias open='gnome-open'
@@ -24,26 +48,5 @@ alias ks='ls'
 alias xs='cd'
 alias sl='ls'
 
-#PS1='[\u@\h \W]\$ '
-
-# Unlimit bash history size
-HISTSIZE=-1
-# remove spaces from bash history
-HISTCONTROL=ignorespace
-# apply history immediately
-PROMPT_COMMAND="history -a; $PROMPT_COMMAND"
-# add some other useful path to bash cd command
-# Use vim as default text editor
-export EDITOR='/usr/bin/vim'
-export VISUAL='/usr/bin/vim'
-
-__include_functions() {
-    for i in ~/bin/helper/*.sh; do
-        if [[ -x $i ]]; then
-            . $i
-        fi
-    done
-}
-__include_functions
-unset __include_functions
-
+#
+markdir_setup_alias go back mark_here || echo "markhere alias fail"
