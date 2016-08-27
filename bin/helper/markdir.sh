@@ -112,29 +112,33 @@ markdir_clean_alias() {
 }
 
 __markdir_complete() {
+    local hint=$2
     local pattern=$2
-    local line
-    local hint
-    local fields
-    local go_dist
+    local line name fields
 
+    local cur prev words cword split;
+    _init_completion -s || return;
+
+    hint=${hint^^}
     pattern=${pattern^^}
     pattern=$(sed 's/./&*/g' - <<< $pattern)
     pattern='*'$pattern
-    COMPREPLY=($(
     while read line
     do
         fields=($line)
-        hint=${fields[0]^^}
-        if [[ $hint == $pattern ]]; then
-            echo ${fields[0]}
+        name=${fields[0]^^}
+        if [ "$name" = "$hint" ]; then
+            COMPREPLY+=( $name )
+            break
+        elif [[ $name == $pattern ]]; then
+            COMPREPLY+=( ${fields[0]} )
         fi
     done < $MARKDIR_HINTS_FILE
-    ))
 
     if [[ ${#COMPREPLY[@]} -eq 1 ]]; then
         COMPREPLY=($(_MARKDIR_get_path_from_hint ${COMPREPLY[0]}))
+    else
+        _filedir
     fi
-    return 0
 }
 complete -F __markdir_complete -o default markdir_go
