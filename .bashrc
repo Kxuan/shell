@@ -30,6 +30,7 @@ alias make='make -j4'
 alias open='gnome-open'
 alias vi=vim
 alias grep='grep --color=auto --binary-files=without-match -I -D skip'
+alias less='less -r'
 alias dd='dd status=progress'
 alias grp='grep -nrP'
 alias wget='wget --content-disposition'
