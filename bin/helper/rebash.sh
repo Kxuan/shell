@@ -1,7 +1,7 @@
 rebash() {
     local exec_path=$(readlink -f /proc/$$/exe)
     local IFS=$'\n'
-    local -a args=()
+    local -a args=$@
     local arg
     local has_zeroth_arg=false
     local zeroth_arg
