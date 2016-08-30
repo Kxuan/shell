@@ -6,10 +6,9 @@ fi
 
 _MARKDIR_search() {
     local pattern=$1
-    local line
-    local hint
+    local line filename
+    local name
     local fields
-    local go_dist
 
     pattern=${pattern^^}
     pattern=$(sed 's/./&*/g' - <<< $pattern)
@@ -17,13 +16,20 @@ _MARKDIR_search() {
     while read line
     do
         fields=($line)
-        hint=${fields[0]^^}
-        if [[ $hint == $pattern ]]; then
-            go_dist=${line#* }
-            echo $go_dist
+        name=${fields[0]^^}
+        if [[ $name == $pattern ]]; then
+            echo ${line#* }
             return 0
         fi
     done < $MARKDIR_HINTS_FILE
+    for filename in *
+    do
+        name=${filename^^}
+        if [[ -d $filename ]] && [[ $name == $pattern ]]; then
+            echo $filename
+            return 0
+        fi
+    done
     return 1
 }
 _MARKDIR_get_path_from_hint() {
