@@ -12,7 +12,7 @@ PROMPT_COMMAND="history -a; $PROMPT_COMMAND"
 # add some other useful path to bash cd command
 # Use vim as default text editor
 export EDITOR='/usr/bin/vim'
-export VISUAL='/usr/bin/gedit'
+export VISUAL='/usr/bin/vim'
 
 __bash_load_helpers() {
     local i
