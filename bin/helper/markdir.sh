@@ -121,11 +121,11 @@ __markdir_complete() {
     local hint=$2
     local pattern=$2
     local line name fields
+    local reply
 
     local cur prev words cword split;
     _init_completion -s || return;
 
-    hint=${hint^^}
     pattern=${pattern^^}
     pattern=$(sed 's/./&*/g' - <<< $pattern)
     pattern='*'$pattern
@@ -133,7 +133,7 @@ __markdir_complete() {
     do
         fields=($line)
         name=${fields[0]^^}
-        if [ "$name" = "$hint" ]; then
+        if [ "$name" = "${hint^^}" ]; then
             COMPREPLY+=( $name )
             break
         elif [[ $name == $pattern ]]; then
@@ -142,7 +142,9 @@ __markdir_complete() {
     done < $MARKDIR_HINTS_FILE
 
     if [[ ${#COMPREPLY[@]} -eq 1 ]]; then
-        COMPREPLY=($(_MARKDIR_get_path_from_hint ${COMPREPLY[0]}))
+        reply=$(_MARKDIR_get_path_from_hint ${COMPREPLY[0]})
+        COMPREPLY=($reply)
+        compopt -o nospace
     else
         _filedir
     fi
