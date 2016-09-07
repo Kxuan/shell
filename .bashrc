@@ -25,6 +25,7 @@ __bash_load_helpers() {
 __bash_load_helpers
 unset __bash_load_helpers
 
+alias sudo='sudo '
 alias ..='cd ..'
 alias make='make -j4'
 alias open='gnome-open'
@@ -43,6 +44,7 @@ alias ls='ls --color=auto'
 alias rm='rm --verbose'
 alias pkill='pkill -c'
 alias virt-manager='virt-manager --spice-disable-auto-usbredir'
+alias axel='axel -a'
 
 #Intelligent error correction
 alias ks='ls'
