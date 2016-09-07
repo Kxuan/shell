@@ -44,7 +44,7 @@ alias ls='ls --color=auto'
 alias rm='rm --verbose'
 alias pkill='pkill -c'
 alias virt-manager='virt-manager --spice-disable-auto-usbredir'
-alias axel='axel -a'
+alias axel='axel -a -n10'
 
 #Intelligent error correction
 alias ks='ls'
