@@ -17,8 +17,6 @@ run() {
     shift $((OPTIND-1))
     done
 
-    echo $?
-
     case $mode in 
         waitsuccess)
             while ! $@;do :;done
