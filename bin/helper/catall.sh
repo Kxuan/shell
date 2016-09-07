@@ -11,7 +11,7 @@ __cat_all_file_in_dir() {
             cat $f
             $add_lf && echo
         elif $reverse && [[ -d $f ]]; then
-            pushd -- $f >/dev/null
+            pushd -- $f >/dev/null || continue
             __cat_all_file_in_dir $prefix$f'/' $reverse $next_line $add_lf
             popd >/dev/null
         fi
@@ -42,7 +42,7 @@ catall() {
     fi
     
     for dir in ${dirs[@]}; do
-        pushd -- $dir >/dev/null
+        pushd -- $dir >/dev/null || continue
         __cat_all_file_in_dir "" $reverse $next_line $add_lf
         popd >/dev/null
     done
