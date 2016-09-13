@@ -1,6 +1,5 @@
-
 pkg() {
-    action=$1
+    local action=$1
     shift
     case $action in
         iu|su|systemupgrade|sys)
@@ -15,21 +14,26 @@ Warning: The pacman cache will be erased, regardless upgrade successful or not.
             fi
             ;;
         u|up|update)
-            sudo pacman -Sy;;
+            sudo pacman -Sy
+            ;;
         i|inst|install|a|add)
             sudo pacman -S --color=always --noconfirm $@ ;;
         if|info)
-            pacman -Si $@;;
+            pacman -Si $@
+            ;;
         r|re|remove|un|uninstall)
             sudo pacman -Rsc --color=always $@ ;;
         s|se|search)
-            pacsearch $@ ;;
+            pacsearch $@
+            ;;
         f|file|path|filename)
-            pkgfile -srv $@ ;;
+            pkgfile -srv $@
+            ;;
         b|bin|binary)
             pkgfile -srv '\/s?bin\/'$1'$' ;;
         l|list)
             pkgfile -l $@ ;;
+            
         *) return 1;;
     esac
 }
@@ -65,11 +69,19 @@ l list )
     case $action in 
         iu|su|systemupgrade|sys);;
         f|file|path|filename);;
-        b|bin|binary);;
         i|inst|install|a|add|s|se|search|l|list|if|info)
             _pacman_pkg Slq;;
         r|re|remove|un|uninstall)
             _pacman_pkg Qqe;;
+        b|bin|binary)
+            _arch_compgen `pkgfile -rv '/s?bin/'$cur'\w*$' | while read line; do 
+                fields=($line)
+                IFS=/ fields=(${fields[2]})
+                len=${#fields[@]}
+                let len-=1
+                echo ${fields[len]}
+            done`
+        ;;
     esac 
     return 0
 }
