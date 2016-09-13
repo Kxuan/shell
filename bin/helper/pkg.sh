@@ -26,6 +26,8 @@ Warning: The pacman cache will be erased, regardless upgrade successful or not.
             pacsearch $@ ;;
         f|file|path|filename)
             pkgfile -srv $@ ;;
+        b|bin|binary)
+            pkgfile -srv '\/s?bin\/'$1'$' ;;
         l|list)
             pkgfile -l $@ ;;
         *) return 1;;
@@ -33,7 +35,16 @@ Warning: The pacman cache will be erased, regardless upgrade successful or not.
 }
 
 __pkg_complete() {
-    local __pkg_actions=(iu su systemupgrade sys u up update i inst install a add if info r re remove un uninstall s se search f file path filename l list)
+    local __pkg_actions=(
+iu su systemupgrade sys
+u up update
+i inst install a add
+if info
+r re remove un uninstall
+s se search
+f file path filename
+b bin binary
+l list )
     local cur=$2
     COMPREPLY=()
 
@@ -54,6 +65,7 @@ __pkg_complete() {
     case $action in 
         iu|su|systemupgrade|sys);;
         f|file|path|filename);;
+        b|bin|binary);;
         i|inst|install|a|add|s|se|search|l|list|if|info)
             _pacman_pkg Slq;;
         r|re|remove|un|uninstall)
