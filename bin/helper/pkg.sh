@@ -38,6 +38,22 @@ Warning: The pacman cache will be erased, regardless upgrade successful or not.
     esac
 }
 
+__pkg_complete_binary() {
+    local -a fields
+    local filename
+    local IFS
+    pkgfile -rv '/s?bin/'$1'\w*$' | while read line; do 
+         IFS=$'\t '
+         fields=($line)
+         filename=${fields[2]}
+         IFS=/
+         fields=($filename)
+         len=${#fields[@]}
+         let len-=1
+         echo ${fields[len]}
+         IFS=$'\n'
+     done
+}
 __pkg_complete() {
     local __pkg_actions=(
 iu su systemupgrade sys
@@ -74,13 +90,7 @@ l list )
         r|re|remove|un|uninstall)
             _pacman_pkg Qqe;;
         b|bin|binary)
-            _arch_compgen `pkgfile -rv '/s?bin/'$cur'\w*$' | while read line; do 
-                fields=($line)
-                IFS=/ fields=(${fields[2]})
-                len=${#fields[@]}
-                let len-=1
-                echo ${fields[len]}
-            done`
+            COMPREPLY=($(__pkg_complete_binary $cur))
         ;;
     esac 
     return 0
