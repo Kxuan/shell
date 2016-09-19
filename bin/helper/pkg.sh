@@ -2,7 +2,7 @@ pkg() {
     local action=$1
     shift
     case $action in
-        iu|su|systemupgrade|sys)
+        ui|iu|su|systemupgrade|sys)
             read -N 1 -p "Are you sure upgrade the system? 
 Warning: The pacman cache will be erased, regardless upgrade successful or not.
 (y/N)"
@@ -56,7 +56,7 @@ __pkg_complete_binary() {
 }
 __pkg_complete() {
     local __pkg_actions=(
-iu su systemupgrade sys
+ui iu su systemupgrade sys
 u up update
 i inst install a add
 if info
