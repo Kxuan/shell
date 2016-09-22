@@ -1,3 +1,34 @@
+_pkg_install_binary() {
+    local bin_name=$1
+    local packages=()
+    local fields
+    local i n
+    local user_choice
+
+    packages=($(pkgfile -sr '\/s?bin\/'$bin_name'$'))
+    n=${#packages[@]}
+
+    if [[ n -ge 1 ]]; then
+        for ((i=0;i<n;i++)); do
+            echo "$((i+1))) ${packages[i]}"
+        done
+
+        read -p "[1-$n]? " user_choice || return 1
+        let user_choice-=1
+        
+        if [[ -z ${packages[user_choice]} ]]; then
+            echo "Invalid choice" >&2
+            return 1
+        fi
+    else
+        user_choice=0
+        read -p "Install ${packages[user_choice]}? [y/N]" -n1
+        if [ "$REPLY" != y ] && [ "$REPLY" != Y ]; then
+            return 1
+        fi
+    fi
+    pkg i ${packages[user_choice]}
+}
 pkg() {
     local action=$1
     shift
@@ -31,6 +62,8 @@ Warning: The pacman cache will be erased, regardless upgrade successful or not.
             ;;
         b|bin|binary)
             pkgfile -srv '\/s?bin\/'$1'$' ;;
+        bi|ib|installbinary)
+            _pkg_install_binary $@;;
         l|list)
             pkgfile -l $@ ;;
             
