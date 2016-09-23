@@ -8,7 +8,7 @@ _pkg_install_binary() {
     packages=($(pkgfile -sr '\/s?bin\/'$bin_name'$'))
     n=${#packages[@]}
 
-    if [[ n -ge 1 ]]; then
+    if ((n > 1)); then
         for ((i=0;i<n;i++)); do
             echo "$((i+1))) ${packages[i]}"
         done
@@ -20,6 +20,9 @@ _pkg_install_binary() {
             echo "Invalid choice" >&2
             return 1
         fi
+    elif ((n == 0)); then
+        echo "No binary file named $bin_name" >&2
+        return 1
     else
         user_choice=0
         read -p "Install ${packages[user_choice]}? [y/N]" -n1
