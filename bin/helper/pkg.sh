@@ -73,7 +73,7 @@ __pkg_complete_binary() {
     local -a fields
     local filename
     local IFS
-    pkgfile -rv '/s?bin/'$1'\w*$' | while read line; do 
+    while read line; do 
          IFS=$'\t '
          fields=($line)
          filename=${fields[2]}
@@ -81,9 +81,9 @@ __pkg_complete_binary() {
          fields=($filename)
          len=${#fields[@]}
          let len-=1
-         echo ${fields[len]}
+         COMPREPLY+=(${fields[len]})
          IFS=$'\n'
-     done
+     done < <(pkgfile -rv '/s?bin/'$1'\w*$') 
 }
 __pkg_complete() {
     local __pkg_actions=(
@@ -121,7 +121,7 @@ l list )
         r|re|remove|un|uninstall)
             _pacman_pkg Qqe;;
         b|bin|binary)
-            COMPREPLY=($(__pkg_complete_binary $cur))
+            __pkg_complete_binary $cur
         ;;
     esac 
     return 0
