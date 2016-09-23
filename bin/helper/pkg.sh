@@ -60,7 +60,9 @@ Warning: The pacman cache will be erased, regardless upgrade successful or not.
         f|file|path|filename)
             pkgfile -srv $@
             ;;
-        b|bin|binary)
+        binary)
+            pkgfile -bsv $1;;
+        b|bin)
             pkgfile -srv '\/s?bin\/'$1'$' ;;
         bi|ib|installbinary)
             _pkg_install_binary $@;;
