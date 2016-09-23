@@ -101,13 +101,6 @@ l list )
 
     #Complete the action
     if ((COMP_CWORD == 1)); then
-        for i in ${__pkg_actions[@]}
-        do
-            if [[ $i == $cur ]]; then
-                COMPREPLY=($cur)
-                return 0
-            fi
-        done
         _arch_compgen "${__pkg_actions[@]}"
         return 0
     fi
