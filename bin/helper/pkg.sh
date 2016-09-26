@@ -30,45 +30,76 @@ _pkg_install_binary() {
             return 1
         fi
     fi
-    pkg i ${packages[user_choice]}
+    pkg install ${packages[user_choice]}
 }
-pkg() {
-    local action=$1
-    shift
-    case $action in
-        ui|iu|su|systemupgrade|sys)
-            read -N 1 -p "Are you sure upgrade the system? 
+_pkg_system_upgrade() {
+    read -N 1 -p "Are you sure upgrade the system? 
 Warning: The pacman cache will be erased, regardless upgrade successful or not.
 (y/N)"
-            if [[ $REPLY == 'y' ]] || [[ $REPLY == 'Y' ]]; then
-                sudo pacman -S -cc --noconfirm
-                sudo pacman -S -u -yy --color=always --force
-            else
-                return 2
-            fi
-            ;;
-        u|up|update)
-            sudo pacman -Sy;;
-        i|inst|install|a|add)
-            sudo pacman -S --color=always --noconfirm $@ ;;
-        if|info)
-            pacman -Si $@ ;;
-        r|re|remove|un|uninstall)
-            sudo pacman -Rsc --color=always $@ ;;
-        s|se|search)
-            pacsearch $@;;
-        f|file|path|filename)
-            pkgfile -srv $@;;
-        binary)
-            pkgfile -bsv $1;;
+    if [[ $REPLY == 'y' ]] || [[ $REPLY == 'Y' ]]; then
+        sudo pacman -S -u -yy --color=always --force
+    else
+        return 2
+    fi
+
+}
+declare -Ag _pkg_action_map=(
+["ui"]="_pkg_system_upgrade"
+["iu"]="_pkg_system_upgrade"
+["su"]="_pkg_system_upgrade"
+["sys"]="_pkg_system_upgrade"
+["systemupgrade"]="_pkg_system_upgrade"
+["u"]="sudo pacman -Sy"
+["up"]="sudo pacman -Sy"
+["update"]="sudo pacman -Sy"
+["i"]="sudo pacman -S --color=always --noconfirm"
+["inst"]="sudo pacman -S --color=always --noconfirm"
+["install"]="sudo pacman -S --color=always --noconfirm"
+["a"]="sudo pacman -S --color=always --noconfirm"
+["add"]="sudo pacman -S --color=always --noconfirm"
+["if"]="pacman -Si"
+["info"]="pacman -Si"
+["r"]="sudo pacman -Rsc --color=always"
+["re"]="sudo pacman -Rsc --color=always"
+["remove"]="sudo pacman -Rsc --color=always"
+["un"]="sudo pacman -Rsc --color=always"
+["uninstall"]="sudo pacman -Rsc --color=always"
+["s"]="pacsearch"
+["se"]="pacsearch"
+["search"]="pacsearch"
+["f"]="pkgfile -srv"
+["file"]="pkgfile -srv"
+["path"]="pkgfile -srv"
+["filename"]="pkgfile -srv"
+["binary"]="pkgfile -bsv"
+#["b"]=special "
+#["bin"]=special"
+["bi"]="_pkg_install_binary"
+["ib"]="_pkg_install_binary"
+["installbinary"]="_pkg_install_binary"
+["l"]="pkgfile -l"
+["list"]="pkgfile -l"
+["test"]="echo"
+)
+
+pkg() {
+    local IFS
+    local action=$1
+    shift
+
+    case $action in
         b|bin)
             pkgfile -srv '\/s?bin\/'$1'$' ;;
-        bi|ib|installbinary)
-            _pkg_install_binary $@;;
-        l|list)
-            pkgfile -l $@ ;;
-            
-        *) return 1;;
+        *)
+        if [[ -n ${_pkg_action_map[$action]} ]]; then
+            IFS=' '
+            local cmds=(${_pkg_action_map[$action]})
+            IFS=
+            ${cmds[@]} $@
+        else
+            echo "unrecognized action $action" >&2
+        fi
+        ;;
     esac
 }
 
@@ -89,36 +120,23 @@ __pkg_complete_binary() {
      done < <(pkgfile -rv '/s?bin/'$1'\w*$') 
 }
 __pkg_complete() {
-    local __pkg_actions=(
-ui iu su systemupgrade sys
-u up update
-i inst install a add
-if info
-r re remove un uninstall
-s se search
-f file path filename
-b bin binary
-l list )
     local cur=$2
     COMPREPLY=()
 
     #Complete the action
     if ((COMP_CWORD == 1)); then
-        _arch_compgen "${__pkg_actions[@]}"
+        _arch_compgen "${!_pkg_action_map[@]}"
         return 0
     fi
 
     local action=${COMP_WORDS[1]}
     case $action in 
-        iu|su|systemupgrade|sys);;
-        f|file|path|filename);;
         i|inst|install|a|add|s|se|search|l|list|if|info)
             _pacman_pkg Slq;;
         r|re|remove|un|uninstall)
             _pacman_pkg Qqe;;
         b|bin|binary)
-            __pkg_complete_binary $cur
-        ;;
+            __pkg_complete_binary $cur;;
     esac 
     return 0
 }
