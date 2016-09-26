@@ -54,3 +54,6 @@ alias sl='ls'
 
 #
 markdir_setup_alias go back mark_here || echo "markhere alias fail"
+
+#resize window size after each child process exit 
+trap 'builtin kill -WINCH $$' SIGCHLD
