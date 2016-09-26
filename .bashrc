@@ -45,6 +45,7 @@ alias rm='rm --verbose'
 alias pkill='pkill -c'
 alias virt-manager='virt-manager --spice-disable-auto-usbredir'
 alias axel='axel -a -n10'
+alias takeowner='sudo chown $USER:$GROUPS'
 
 #Intelligent error correction
 alias ks='ls'
