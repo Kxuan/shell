@@ -66,7 +66,9 @@ markdir_go() {
     local hint=$1
     local target_dir
     
-    if ! target_dir=$(_MARKDIR_search $hint); then
+    if [[ -z $hint ]]; then
+        target_dir=$(readlink -f .)
+    elif ! target_dir=$(_MARKDIR_search $hint); then
         # hint is not found. try to change directory to $hint
         target_dir=$hint
     fi
