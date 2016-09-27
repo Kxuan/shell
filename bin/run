@@ -8,7 +8,7 @@ run() {
     local sleeptime
 
     local OPTIND=1
-    while getopts :ft:s: opt $@; do
+    while getopts :ft:s:h opt $@; do
     case $opt in
         f) mode=waitsuccess;;
         t) mode=timed;sleeptime=$OPTARG;;
@@ -33,3 +33,5 @@ run() {
             ;;
     esac 
 }
+
+[[ "${BASH_SOURCE[0]}" == "${0}" ]] && run $@
