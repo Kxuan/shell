@@ -13,6 +13,9 @@ run() {
         f) mode=waitsuccess;;
         t) mode=timed;sleeptime=$OPTARG;;
         s) signal=$OPTARG;;
+        h) 
+            echo "run <-f | -t [time] -s SIGNAL>"
+            return 0;;
     esac
     shift $((OPTIND-1))
     done
