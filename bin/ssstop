@@ -1,2 +1,0 @@
-#!/usr/bin/sudo bash
-exec sslocal -d stop --user shadowsocks --log-file /var/log/shadowsocks.log --pid-file /var/run/shadowsocks/shadowsocks.pid 
