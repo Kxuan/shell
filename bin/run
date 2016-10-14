@@ -3,7 +3,7 @@
 run() {
     local opt arg
     local pid
-    local mode
+    local mode=waitsuccess
     local signal=SIGINT
     local sleeptime
 
@@ -14,11 +14,11 @@ run() {
         t) mode=timed;sleeptime=$OPTARG;;
         s) signal=$OPTARG;;
         h) 
-            echo "run <-f | -t [time] -s SIGNAL>"
+            echo "run <-f | -t timeout> [-s SIGNAL] program arguments"
             return 0;;
     esac
-    shift $((OPTIND-1))
     done
+    shift $((OPTIND-1))
 
     case $mode in 
         waitsuccess)
