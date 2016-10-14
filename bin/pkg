@@ -1,5 +1,17 @@
 #!/bin/bash
 
+#PACKAGE_MANAGER=pacman
+#PACKAGE_MANAGER=yaourt
+_pm() {
+    if [[ -z $PACKAGE_MANAGER ]]; then
+        if which yaourt >/dev/null; then
+            PACKAGE_MANAGER=yaourt
+        else
+            PACKAGE_MANAGER=pacman
+        fi
+    fi
+    $PACKAGE_MANAGER $@
+}
 _pkg_search_binary() {
     pkgfile -srv '\/s?bin\/'$1'$'
 }
@@ -58,23 +70,23 @@ options:
   -v, --verbose        be verbose
   -h, --help           show this message
 "
-        pacman -S --help
+        _pm -S --help
         return 0
         ;;
         --) shift ; break ;;
         *) break ;;
       esac
     done
-    sudo pacman -S --color=always $arg_confirm $arg_needed ${extra_args[@]} $@
+    sudo _pm -S --color=always $arg_confirm $arg_needed ${extra_args[@]} $@
 }
 _pkg_system_upgrade() {
     sudo -v
     read -N 1 -p "Are you sure upgrade the system? 
-Warning: The pacman cache will be erased, regardless upgrade successful or not.
+Warning: The _pm cache will be erased, regardless upgrade successful or not.
 (y/N)"
     if [[ $REPLY == 'y' ]] || [[ $REPLY == 'Y' ]]; then
-        sudo pacman -S -cc --noconfirm
-        sudo pacman -S -u -yy --color=always --force
+        sudo _pm -S -cc --noconfirm
+        sudo _pm -S -u -yy --color=always --force
     else
         return 2
     fi
@@ -86,21 +98,21 @@ declare -Ag _pkg_action_map=(
 ["su"]="_pkg_system_upgrade"
 ["sys"]="_pkg_system_upgrade"
 ["systemupgrade"]="_pkg_system_upgrade"
-["u"]="sudo pacman -Sy"
-["up"]="sudo pacman -Sy"
-["update"]="sudo pacman -Sy"
+["u"]="sudo _pm -Sy"
+["up"]="sudo _pm -Sy"
+["update"]="sudo _pm -Sy"
 ["i"]="_pkg_install_package"
 ["inst"]="_pkg_install_package"
 ["install"]="_pkg_install_package"
 ["a"]="_pkg_install_package"
 ["add"]="_pkg_install_package"
-["if"]="pacman -Si"
-["info"]="pacman -Si"
+["if"]="_pm -Si"
+["info"]="_pm -Si"
 
-["r"]="sudo pacman -Rsc --color=always"
-["remove"]="sudo pacman -Rsc --color=always"
-["un"]="sudo pacman -Rsc --color=always"
-["uninstall"]="sudo pacman -Rsc --color=always"
+["r"]="sudo _pm -Rsc --color=always"
+["remove"]="sudo _pm -Rsc --color=always"
+["un"]="sudo _pm -Rsc --color=always"
+["uninstall"]="sudo _pm -Rsc --color=always"
 
 ["s"]="pacsearch"
 ["se"]="pacsearch"
