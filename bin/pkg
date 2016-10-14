@@ -98,7 +98,6 @@ declare -Ag _pkg_action_map=(
 ["info"]="pacman -Si"
 
 ["r"]="sudo pacman -Rsc --color=always"
-["re"]="sudo pacman -Rsc --color=always"
 ["remove"]="sudo pacman -Rsc --color=always"
 ["un"]="sudo pacman -Rsc --color=always"
 ["uninstall"]="sudo pacman -Rsc --color=always"
@@ -117,6 +116,7 @@ declare -Ag _pkg_action_map=(
 ["bi"]="_pkg_install_binary"
 ["ib"]="_pkg_install_binary"
 ["installbinary"]="_pkg_install_binary"
+
 ["l"]="pkgfile -l"
 ["list"]="pkgfile -l"
 )
