@@ -1,5 +1,8 @@
 #!/bin/bash
 
+_pkg_search_binary() {
+    pkgfile -srv '\/s?bin\/'$1'$'
+}
 _pkg_install_binary() {
     local bin_name=$1
     local packages=()
@@ -34,11 +37,43 @@ _pkg_install_binary() {
     fi
     pkg install ${packages[user_choice]}
 }
+_pkg_install_package() {
+    local arg_confirm="--noconfirm"
+    local arg_needed="--needed"
+    local extra_args=()
+    local args=`getopt -o'-ifvNh' --long inactive,force,verbose,no-needed,help -n 'pkg' -- "$@"`
+    eval set -- "$args"
+
+    while true ; do
+      case "$1" in
+        -i|--inactive) arg_confirm="" ; shift ;;
+        -N|--no-needed) arg_needed="" ; shift ;;
+        -f|--force) extra_args+=( "--force" ) ; shift ;;
+        -v|--verbose) extra_args+=( "--verbose" ) ; shift ;;
+        -h|--help) echo "usage:  pkg i[nstall] [option] package
+options:
+  -i, --inactive       confirm before install packages
+  -N, --no-needed      reinstall up to date packages
+  -f, --force          force install, overwrite conflicting files
+  -v, --verbose        be verbose
+  -h, --help           show this message
+"
+        pacman -S --help
+        return 0
+        ;;
+        --) shift ; break ;;
+        *) break ;;
+      esac
+    done
+    sudo pacman -S --color=always $arg_confirm $arg_needed ${extra_args[@]} $@
+}
 _pkg_system_upgrade() {
+    sudo -v
     read -N 1 -p "Are you sure upgrade the system? 
 Warning: The pacman cache will be erased, regardless upgrade successful or not.
 (y/N)"
     if [[ $REPLY == 'y' ]] || [[ $REPLY == 'Y' ]]; then
+        sudo pacman -S -cc --noconfirm
         sudo pacman -S -u -yy --color=always --force
     else
         return 2
@@ -54,34 +89,36 @@ declare -Ag _pkg_action_map=(
 ["u"]="sudo pacman -Sy"
 ["up"]="sudo pacman -Sy"
 ["update"]="sudo pacman -Sy"
-["i"]="sudo pacman -S --color=always --noconfirm"
-["inst"]="sudo pacman -S --color=always --noconfirm"
-["install"]="sudo pacman -S --color=always --noconfirm"
-["a"]="sudo pacman -S --color=always --noconfirm"
-["add"]="sudo pacman -S --color=always --noconfirm"
+["i"]="_pkg_install_package"
+["inst"]="_pkg_install_package"
+["install"]="_pkg_install_package"
+["a"]="_pkg_install_package"
+["add"]="_pkg_install_package"
 ["if"]="pacman -Si"
 ["info"]="pacman -Si"
+
 ["r"]="sudo pacman -Rsc --color=always"
 ["re"]="sudo pacman -Rsc --color=always"
 ["remove"]="sudo pacman -Rsc --color=always"
 ["un"]="sudo pacman -Rsc --color=always"
 ["uninstall"]="sudo pacman -Rsc --color=always"
+
 ["s"]="pacsearch"
 ["se"]="pacsearch"
 ["search"]="pacsearch"
+
 ["f"]="pkgfile -srv"
 ["file"]="pkgfile -srv"
 ["path"]="pkgfile -srv"
 ["filename"]="pkgfile -srv"
+
 ["binary"]="pkgfile -bsv"
-#["b"]=special "
-#["bin"]=special"
+["b"]="_pkg_search_binary"
 ["bi"]="_pkg_install_binary"
 ["ib"]="_pkg_install_binary"
 ["installbinary"]="_pkg_install_binary"
 ["l"]="pkgfile -l"
 ["list"]="pkgfile -l"
-["test"]="echo"
 )
 
 pkg() {
@@ -90,8 +127,6 @@ pkg() {
     shift
 
     case $action in
-        b|bin)
-            pkgfile -srv '\/s?bin\/'$1'$' ;;
         *)
         if [[ -n ${_pkg_action_map[$action]} ]]; then
             IFS=' '
