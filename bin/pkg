@@ -2,16 +2,13 @@
 
 #PACKAGE_MANAGER=pacman
 #PACKAGE_MANAGER=yaourt
-_pm() {
-    if [[ -z $PACKAGE_MANAGER ]]; then
-        if which yaourt >/dev/null; then
-            PACKAGE_MANAGER=yaourt
-        else
-            PACKAGE_MANAGER=pacman
-        fi
+if [[ -z $PACKAGE_MANAGER ]]; then
+    if which yaourt >/dev/null; then
+        PACKAGE_MANAGER=yaourt
+    else
+        PACKAGE_MANAGER=pacman
     fi
-    $PACKAGE_MANAGER $@
-}
+fi
 _pkg_search_binary() {
     pkgfile -srv '\/s?bin\/'$1'$'
 }
@@ -70,23 +67,23 @@ options:
   -v, --verbose        be verbose
   -h, --help           show this message
 "
-        _pm -S --help
+        $PACKAGE_MANAGER -S --help
         return 0
         ;;
         --) shift ; break ;;
         *) break ;;
       esac
     done
-    sudo _pm -S --color=always $arg_confirm $arg_needed ${extra_args[@]} $@
+    sudo $PACKAGE_MANAGER -S --color=always $arg_confirm $arg_needed ${extra_args[@]} $@
 }
 _pkg_system_upgrade() {
     sudo -v
     read -N 1 -p "Are you sure upgrade the system? 
-Warning: The _pm cache will be erased, regardless upgrade successful or not.
+Warning: The $PACKAGE_MANAGER cache will be erased, regardless upgrade successful or not.
 (y/N)"
     if [[ $REPLY == 'y' ]] || [[ $REPLY == 'Y' ]]; then
-        sudo _pm -S -cc --noconfirm
-        sudo _pm -S -u -yy --color=always --force
+        sudo $PACKAGE_MANAGER -S -cc --noconfirm
+        sudo $PACKAGE_MANAGER -S -u -yy --color=always --force
     else
         return 2
     fi
@@ -98,21 +95,21 @@ declare -Ag _pkg_action_map=(
 ["su"]="_pkg_system_upgrade"
 ["sys"]="_pkg_system_upgrade"
 ["systemupgrade"]="_pkg_system_upgrade"
-["u"]="sudo _pm -Sy"
-["up"]="sudo _pm -Sy"
-["update"]="sudo _pm -Sy"
+["u"]="sudo $PACKAGE_MANAGER -Sy"
+["up"]="sudo $PACKAGE_MANAGER -Sy"
+["update"]="sudo $PACKAGE_MANAGER -Sy"
 ["i"]="_pkg_install_package"
 ["inst"]="_pkg_install_package"
 ["install"]="_pkg_install_package"
 ["a"]="_pkg_install_package"
 ["add"]="_pkg_install_package"
-["if"]="_pm -Si"
-["info"]="_pm -Si"
+["if"]="$PACKAGE_MANAGER -Si"
+["info"]="$PACKAGE_MANAGER -Si"
 
-["r"]="sudo _pm -Rsc --color=always"
-["remove"]="sudo _pm -Rsc --color=always"
-["un"]="sudo _pm -Rsc --color=always"
-["uninstall"]="sudo _pm -Rsc --color=always"
+["r"]="sudo $PACKAGE_MANAGER -Rsc --color=always"
+["remove"]="sudo $PACKAGE_MANAGER -Rsc --color=always"
+["un"]="sudo $PACKAGE_MANAGER -Rsc --color=always"
+["uninstall"]="sudo $PACKAGE_MANAGER -Rsc --color=always"
 
 ["s"]="pacsearch"
 ["se"]="pacsearch"
