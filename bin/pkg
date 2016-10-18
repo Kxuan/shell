@@ -74,7 +74,7 @@ options:
         *) break ;;
       esac
     done
-    sudo $PACKAGE_MANAGER -S --color=always $arg_confirm $arg_needed ${extra_args[@]} $@
+    sudo $PACKAGE_MANAGER -S $arg_confirm $arg_needed ${extra_args[@]} $@
 }
 _pkg_system_upgrade() {
     sudo -v
@@ -83,12 +83,28 @@ Warning: The $PACKAGE_MANAGER cache will be erased, regardless upgrade successfu
 (y/N)"
     if [[ $REPLY == 'y' ]] || [[ $REPLY == 'Y' ]]; then
         sudo $PACKAGE_MANAGER -S -cc --noconfirm
-        sudo $PACKAGE_MANAGER -S -u -yy --color=always --force
+        sudo $PACKAGE_MANAGER -S -u -yy --force
     else
         return 2
     fi
 
 }
+
+_pkg_list_package() {
+    local rc=0
+    for pkg ;do
+        if $PACKAGE_MANAGER -Qq $pkg 2>/dev/null; then
+            $PACKAGE_MANAGER -Ql $pkg
+        else
+           pkgfile -l $pkg
+        fi
+
+        if (( $? != 0 )); then
+            let rc++
+        fi
+    done
+}
+
 declare -Ag _pkg_action_map=(
 ["ui"]="_pkg_system_upgrade"
 ["iu"]="_pkg_system_upgrade"
@@ -106,10 +122,10 @@ declare -Ag _pkg_action_map=(
 ["if"]="$PACKAGE_MANAGER -Si"
 ["info"]="$PACKAGE_MANAGER -Si"
 
-["r"]="sudo $PACKAGE_MANAGER -Rsc --color=always"
-["remove"]="sudo $PACKAGE_MANAGER -Rsc --color=always"
-["un"]="sudo $PACKAGE_MANAGER -Rsc --color=always"
-["uninstall"]="sudo $PACKAGE_MANAGER -Rsc --color=always"
+["r"]="sudo $PACKAGE_MANAGER -Rsc"
+["remove"]="sudo $PACKAGE_MANAGER -Rsc"
+["un"]="sudo $PACKAGE_MANAGER -Rsc"
+["uninstall"]="sudo $PACKAGE_MANAGER -Rsc"
 
 ["s"]="pacsearch"
 ["se"]="pacsearch"
@@ -126,8 +142,8 @@ declare -Ag _pkg_action_map=(
 ["ib"]="_pkg_install_binary"
 ["installbinary"]="_pkg_install_binary"
 
-["l"]="pkgfile -l"
-["list"]="pkgfile -l"
+["l"]="_pkg_list_package"
+["list"]="_pkg_list_package"
 )
 
 pkg() {
