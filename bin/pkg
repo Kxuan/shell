@@ -74,7 +74,11 @@ options:
         *) break ;;
       esac
     done
-    sudo $PACKAGE_MANAGER -S $arg_confirm $arg_needed ${extra_args[@]} $@
+    if [[ $PACKAGE_MANAGER == 'yaourt' ]]; then
+        $PACKAGE_MANAGER -S $arg_confirm $arg_needed ${extra_args[@]} $@
+    else
+        sudo $PACKAGE_MANAGER -S $arg_confirm $arg_needed ${extra_args[@]} $@
+    fi
 }
 _pkg_system_upgrade() {
     sudo -v
