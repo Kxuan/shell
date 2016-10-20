@@ -106,7 +106,10 @@ markdir_setup_alias() {
     alias $alias_go=markdir_go
     alias $alias_back=markdir_back
     alias $alias_mark=markdir_markhere
-    complete -F __markdir_complete -o default $alias_go
+
+    if [[ -n $BASH ]]; then
+        complete -F __markdir_complete -o default $alias_go
+    fi
 }
 markdir_clean_alias() {
     local alias_go=$1
@@ -151,4 +154,6 @@ __markdir_complete() {
         _filedir
     fi
 }
+if [[ -n $BASH ]]; then
 complete -F __markdir_complete -o default markdir_go
+fi

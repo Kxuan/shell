@@ -37,5 +37,7 @@ a add bi binary f file filename i ib if info inst install installbinary iu l lis
     esac 
     return 0
 }
+if [[ -n $BASH ]]; then
 _completion_loader pacman
 complete -F __pkg_complete -o default pkg
+fi
