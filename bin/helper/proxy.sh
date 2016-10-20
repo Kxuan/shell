@@ -1,10 +1,10 @@
 
 proxy_setup() {
     export http_proxy=http://127.0.0.1:8123/
-    export https_proxy=https://127.0.0.1:8123/
+    export https_proxy=http://127.0.0.1:8123/
 }
 proxy_start() {
-    ssh lufq@10.167.226.34 -NnCf -L8123:127.0.0.1:8123
+    ssh lufq@192.168.20.95 -NnCf -L8123:127.0.0.1:8123
     proxy_setup
 }
 proxy_stop() {
