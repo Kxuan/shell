@@ -131,9 +131,9 @@ declare -Ag _pkg_action_map=(
 ["un"]="sudo $PACKAGE_MANAGER -Rsc"
 ["uninstall"]="sudo $PACKAGE_MANAGER -Rsc"
 
-["s"]="pacsearch"
-["se"]="pacsearch"
-["search"]="pacsearch"
+["s"]="$PACKAGE_MANAGER -Ss"
+["se"]="$PACKAGE_MANAGER -Ss"
+["search"]="$PACKAGE_MANAGER -Ss"
 
 ["f"]="pkgfile -srv"
 ["file"]="pkgfile -srv"
