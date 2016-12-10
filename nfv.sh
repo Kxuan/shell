@@ -1,16 +1,30 @@
 NFV_TESTCASES=
 VIRTUAL_ENV=
-nfvsetup() {
+nfvprepare() {
     if [[ $# -ne 2 ]]; then
-        echo "nfvsetup <testcase_dir> <virtual_env>" >&2
+        echo "nfvprepare <virtual_env> <testcase_dir>" >&2
+        return 1
+    fi
+    if [[ ! -d $1 ]] && ! mkdir -p $1; then
+        echo "Can not create $1" >&2
+        return 1
+    fi
+
+    cp -vpr --parents /etc/avocado/ $1
+    echo "$2" >> $1/testcase_dir.conf
+}
+nfvsetup() {
+    if [[ $# -ne 1 ]]; then
+        echo "nfvsetup <virtual_env>" >&2
         return 1
     fi  
-    for dir; do
-        echo "$dir is not an directory!"
-    done
+    if [[ ! -r $1/testcase_dir.conf ]]; then
+        echo "$1 is not a nfv environment. Use nfvprepare." >&2
+        return 1
+    fi
 
-    NFV_TESTCASES=$1
-    export VIRTUAL_ENV=$2
+    NFV_TESTCASES=$(<$1/testcase_dir.conf)
+    export VIRTUAL_ENV=$1
 }
 nfvcd() {
     cases=($(find $NFV_TESTCASES -name $1))
