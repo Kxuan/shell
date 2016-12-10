@@ -2,7 +2,7 @@ NFV_TESTCASES=
 VIRTUAL_ENV=
 nfvsetup() {
     if [[ $# -ne 2 ]]; then
-        echo "nfv_setup <testcase_dir> <virtual_env>" >&2
+        echo "nfvsetup <testcase_dir> <virtual_env>" >&2
         return 1
     fi  
     for dir; do
@@ -35,8 +35,8 @@ nfvcd() {
     return 0
 }
 nfv() {
-    if [[ -n $VIRTUAL_ENV ]]; then
-        echo "Error! Please use nfv_setup to setup nfv environment"
+    if [[ ! -d $VIRTUAL_ENV ]] || [[ ! -d $NFV_TESTCASES ]]; then
+        echo "Error! Please use nfvsetup to setup nfv environment"
         return 2
     fi  
     nfvcd $1 && time avocado run test.py -m test.yaml --show
