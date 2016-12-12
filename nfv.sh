@@ -1,6 +1,10 @@
 #NFV_TESTCASES=
 #VIRTUAL_ENV=
 nfvprepare() {
+    if [[ ! -d /etc/avocado ]]; then
+        echo "You need to install avocado & uts test framework before using this script"
+        return 2
+    fi
     if [[ $# -ne 2 ]]; then
         echo "nfvprepare <virtual_env> <testcase_dir>" >&2
         return 1
@@ -12,12 +16,32 @@ nfvprepare() {
     
     target=$(readlink -f $1)
     escaped_target=${target//\//\\\/}
-    cp -vpr --parents /etc/avocado/ $1
-    mkdir -p $1/results
-    sed -i '/xml_path/ c \
-xml_path = '$(readlink -f $1)'/results/
-s/\/etc\/avocado/'$escaped_target'/' $1/etc/avocado/conf.d/uvp_virt.conf 
-    echo "$2" >> $1/testcase_dir.conf
+
+    if [[ -n $(ls $target) ]]; then
+        echo "Warning: target is not empty, config file will NOT overwrite"
+    else
+        cp -vpr --parents /etc/avocado/ $target
+
+        mkdir -p $target/results
+        sed -i '/^xml_path/ c \
+xml_path = '$target'/results/latest' $target/etc/avocado/conf.d/uvp_virt.conf
+        sed -i '/^logs_dir/ c \
+logs_dir = '$target'/results/' $target/etc/avocado/avocado.conf
+        sed -i 's/\/etc\/avocado/'$escaped_target'\/etc\/avocado/' $(find $target/etc/avocado/ -name '*.conf')
+    fi
+
+    # save test case file
+    readlink -f $2 > $target/testcase_dir.conf
+
+    echo "
+New test environment created!
+
+Virtual Environment: $target
+Test Log: $target/results/
+
+Please note:
+Only the configuration files (/etc/avocado) are redirected.
+The files like virtual disk images, temporary files are not redirected. If you need to use them at the same time, please configure them manually."
 }
 nfvsetup() {
     if [[ $# -ne 1 ]]; then
@@ -54,6 +78,10 @@ _nfv_choose() {
 }
 nfvcd() {
     local dir nfv
+    if [[ ! -d $NFV_TESTCASES ]]; then
+        echo "Virtual Env ($NFV_TESTCASES) is not a directory" >&2
+        return 2
+    fi
 
     dir=$(find $NFV_TESTCASES -name $1)
     if [[ -z $dir ]]; then
@@ -69,10 +97,14 @@ nfvcd() {
     cd `dirname $path` 
 }
 nfv() {
-    if [[ ! -d $VIRTUAL_ENV ]] || [[ ! -d $NFV_TESTCASES ]]; then
-        echo "Error! Please use nfvsetup to setup nfv environment"
+    if [[ ! -d $VIRTUAL_ENV ]]; then
+        echo "Error: Please use nfvsetup to setup nfv environment"
         return 2
     fi  
+    if [[ ! -d $NFV_TESTCASES ]]; then
+        echo "Error: Please use nfvsetup to setup nfv environment"
+        return 2
+    fi
     nfvcd "$@" && time avocado run test.py -m test.yaml --show
 }
 
