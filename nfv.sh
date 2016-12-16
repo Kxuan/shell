@@ -57,8 +57,9 @@ nfvsetup() {
     
     NFV_TESTCASES=$(<$path/testcase_dir.conf)
     export VIRTUAL_ENV=$path
-    local _cf=$(tput setaf 5;tput bold) _cb=$(tput setaf 7)
-    PS1="$_cb[$_cf$(dirname $path)$_cb]$PS1"
+    tput cuu1
+    tput dl1
+    PS1="[$(basename $path)]$PS1"
 }
 _nfv_choose() {
     local sel=$1
