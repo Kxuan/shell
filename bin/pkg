@@ -3,7 +3,7 @@
 #PACKAGE_MANAGER=pacman
 #PACKAGE_MANAGER=yaourt
 if [[ -z $PACKAGE_MANAGER ]]; then
-    if which yaourt >/dev/null; then
+    if which yaourt &>/dev/null; then
         PACKAGE_MANAGER=yaourt
     else
         PACKAGE_MANAGER=pacman
@@ -154,7 +154,10 @@ pkg() {
     local IFS
     local action=$1
     shift
-
+    if [[ -z $action ]]; then
+        echo "Missing action" >&2
+        return 1
+    fi
     case $action in
         *)
         if [[ -n ${_pkg_action_map[$action]} ]]; then
