@@ -18,7 +18,7 @@ _pkg_install_binary() {
     local fields
     local i n
     local user_choice
-
+    local IFS=$'\n'
     packages=($(pkgfile -sr '\/s?bin\/'$bin_name'$'))
     n=${#packages[@]}
 
