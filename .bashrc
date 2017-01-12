@@ -53,7 +53,11 @@ alias xs='cd'
 alias sl='ls'
 
 #
-markdir_setup_alias g back mark_here || echo "markhere alias fail"
+markdir_setup_alias g back markhere || echo "markhere alias fail"
 
 #resize window size after each child process exit 
 trap 'builtin kill -WINCH $$' SIGCHLD
+
+
+# GoLang environment
+export GOPATH='/data/sources/gopath/'
