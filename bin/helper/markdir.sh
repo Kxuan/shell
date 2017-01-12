@@ -1,7 +1,7 @@
 #!/bin/bash
 declare -a MARKDIR_history
 if [[ -z $MARKDIR_HINTS_FILE ]]; then
-MARKDIR_HINTS_FILE=~/bin/.go.hints
+MARKDIR_HINTS_FILE=~/bin/.markdir.hints
 fi
 
 _MARKDIR_search() {
