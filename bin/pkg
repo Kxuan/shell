@@ -86,7 +86,6 @@ _pkg_system_upgrade() {
 Warning: The $PACKAGE_MANAGER cache will be erased, regardless upgrade successful or not.
 (y/N)"
     if [[ $REPLY == 'y' ]] || [[ $REPLY == 'Y' ]]; then
-        sudo $PACKAGE_MANAGER -S -cc --noconfirm
         sudo $PACKAGE_MANAGER -S -u -yy --force
     else
         return 2
