@@ -1,15 +1,24 @@
-_PROXY_LOCAL_ADDRESS=127.0.0.1:8123
+_proxy_arg() {
+    PROXY_REMOTE_ADDRESS=127.0.0.1:8123
+    PROXY_REMOTE_HOST=lufq@10.167.226.34
+    PROXY_LOCAL_ADDRESS='127.0.0.1:8123'
+}
 proxy_setup() {
-    export http_proxy=http://${_PROXY_LOCAL_ADDRESS}/
-    export https_proxy=http://${_PROXY_LOCAL_ADDRESS}/
+    local PROXY_LOCAL_ADDRESS PROXY_REMOTE_HOST PROXY_REMOTE_ADDRESS
+    _proxy_arg
+    export http_proxy=http://${PROXY_LOCAL_ADDRESS}/
+    export https_proxy=http://${PROXY_LOCAL_ADDRESS}/
 }
 proxy_start() {
-    ssh lufq@192.168.20.95 -NnCf -L*:8123:${_PROXY_LOCAL_ADDRESS}
-    proxy_setup
+    local PROXY_LOCAL_ADDRESS PROXY_REMOTE_HOST PROXY_REMOTE_ADDRESS
+    _proxy_arg
+    ssh ${PROXY_REMOTE_HOST} -NnCf -L${PROXY_LOCAL_ADDRESS}:${PROXY_REMOTE_ADDRESS}
 }
 proxy_stop() {
+    local PROXY_LOCAL_ADDRESS PROXY_REMOTE_HOST PROXY_REMOTE_ADDRESS
+    _proxy_arg
     local pid
-    pid=$(ss -Hnp -4 state listening 'src '${_PROXY_LOCAL_ADDRESS}'' | grep -oP 'pid=\d+' | cut -d= -f2)
+    pid=$(ss -Hnp -4 state listening 'src '${PROXY_LOCAL_ADDRESS} | grep -oP 'pid=\d+' | cut -d= -f2)
     ps "$pid" || exit 1
     read -n1 -p "Kill the process? [Y/n]" ans
     if [[ $ans != "n" ]] && [[ $ans != "N" ]]; then
@@ -20,6 +29,8 @@ proxy_stop() {
     unset https_proxy
 }
 proxy_check() {
-    netstat -ntpl 2>/dev/null | grep -q '${_PROXY_LOCAL_ADDRESS}'
+    local PROXY_LOCAL_ADDRESS PROXY_REMOTE_HOST PROXY_REMOTE_ADDRESS
+    _proxy_arg
+    ss -Hnp -4 state listening 'src '${PROXY_LOCAL_ADDRESS} | grep -qP 'pid=\d+'
 }
 proxy_check && proxy_setup && echo "Proxy [ok]"
