@@ -2,16 +2,14 @@
 
 wname=$1
 act=$(xdotool getactivewindow)
-wid=$(xdotool search --name $wname)
+wid=$(xdotool search --limit 1 --name $wname)
 
 unmap() {
     xdotool windowunmap $wid
 }
 map() {
-    xdotool windowmap --sync $wid
-    wmctrl -i -R $wid
-    wmctrl -i -r $wid -b add,fullscreen
-    xdotool key --window $wid "F11"
+    xdotool windowmap $wid
+    wmctrl -i -r $wid -b add,fullscreen & wmctrl -i -R $wid
 }
 
 if [[ $act -eq $wid ]]; then
