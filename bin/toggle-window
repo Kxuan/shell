@@ -1,0 +1,21 @@
+#!/bin/bash
+
+wname=$1
+act=$(xdotool getactivewindow)
+wid=$(xdotool search --name $wname)
+
+unmap() {
+    xdotool windowunmap $wid
+}
+map() {
+    xdotool windowmap --sync $wid
+    wmctrl -i -R $wid
+    wmctrl -i -r $wid -b add,fullscreen
+    xdotool key --window $wid "F11"
+}
+
+if [[ $act -eq $wid ]]; then
+    unmap
+else
+    map
+fi
