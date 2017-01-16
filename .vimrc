@@ -21,3 +21,5 @@ set wrap "不自动换行
 set hlsearch "高亮显示结果
 set incsearch "在输入要搜索的文字时，vim会实时匹配
 
+" remove '=' from filename to support complete file arguments
+set isfname-==
