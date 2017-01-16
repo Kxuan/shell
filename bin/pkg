@@ -85,12 +85,15 @@ _pkg_system_upgrade() {
     read -N 1 -p "Are you sure upgrade the system? 
 Warning: The $PACKAGE_MANAGER cache will be erased, regardless upgrade successful or not.
 (y/N)"
-    if [[ $REPLY == 'y' ]] || [[ $REPLY == 'Y' ]]; then
-        sudo $PACKAGE_MANAGER -S -u -yy --force
-    else
+    if [[ $REPLY != 'y' ]] && [[ $REPLY != 'Y' ]]; then
         return 2
     fi
 
+    if [[ $PACKAGE_MANAGER == 'yaourt' ]]; then
+        yaourt -S -u -yy --force -a
+    else
+        sudo $PACKAGE_MANAGER -S -u -yy --force
+    fi
 }
 
 _pkg_list_package() {
