@@ -8,8 +8,13 @@ unmap() {
     xdotool windowunmap $wid
 }
 map() {
-    xdotool windowmap $wid
-    wmctrl -i -r $wid -b add,fullscreen & wmctrl -i -R $wid
+    if [[ -z $wid ]]; then
+        # window is not created
+        sakura -n 0 -d ~ -x tmux -l -t "$wname" -m -s 
+    else
+        xdotool windowmap $wid
+        # wmctrl -i -r $wid -b add,fullscreen & wmctrl -i -R $wid
+    fi
 }
 
 if [[ $act -eq $wid ]]; then
