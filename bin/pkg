@@ -110,71 +110,70 @@ _pkg_list_package() {
         fi
     done
 }
+_pkg_action_match() {
+    local action=$1
+    local pattern=$(sed 's/./&*/g' - <<< $action)
+    local i
+    local -a hits
+    local match
+
+    for i in ${!_pkg_action_map[@]}; do
+        if [[ $i == $pattern ]]; then
+            hits[${#hits[@]}]=$i
+        fi
+        if [ "$i" = "$action" ]; then
+            match=$i
+        fi
+    done
+    if [[ -n $match ]]; then
+        echo -n $match
+    else
+        echo -n ${hits[@]}
+    fi
+}
 
 declare -Ag _pkg_action_map=(
-["ui"]="_pkg_system_upgrade"
-["iu"]="_pkg_system_upgrade"
-["su"]="_pkg_system_upgrade"
-["sys"]="_pkg_system_upgrade"
-["systemupgrade"]="_pkg_system_upgrade"
-["u"]="sudo $PACKAGE_MANAGER -Sy"
-["up"]="sudo $PACKAGE_MANAGER -Sy"
+["upgradedistro"]="_pkg_system_upgrade"
+["distroupgrade"]="_pkg_system_upgrade"
+
 ["update"]="sudo $PACKAGE_MANAGER -Sy"
-["i"]="_pkg_install_package"
-["inst"]="_pkg_install_package"
 ["install"]="_pkg_install_package"
-["a"]="_pkg_install_package"
-["add"]="_pkg_install_package"
-["if"]="$PACKAGE_MANAGER -Si"
 ["info"]="$PACKAGE_MANAGER -Si"
 
-["r"]="sudo $PACKAGE_MANAGER -Rsc"
 ["remove"]="sudo $PACKAGE_MANAGER -Rsc"
-["un"]="sudo $PACKAGE_MANAGER -Rsc"
 ["uninstall"]="sudo $PACKAGE_MANAGER -Rsc"
 
-["s"]="$PACKAGE_MANAGER -Ss"
-["se"]="$PACKAGE_MANAGER -Ss"
 ["search"]="$PACKAGE_MANAGER -Ss"
 
-["f"]="pkgfile -srv"
-["file"]="pkgfile -srv"
-["path"]="pkgfile -srv"
 ["filename"]="pkgfile -srv"
 
-["binary"]="pkgfile -bsv"
-["b"]="_pkg_search_binary"
-["bi"]="_pkg_install_binary"
-["ib"]="_pkg_install_binary"
-["installbinary"]="_pkg_install_binary"
+["binsearch"]="pkgfile -bsv"
+["bininstall"]="_pkg_install_binary"
 
-["l"]="_pkg_list_package"
 ["list"]="_pkg_list_package"
 )
 
 pkg() {
     local IFS
-    local action=$1
+    local hits=($(_pkg_action_match $1))
+    local match
     shift
-    if [[ -z $action ]]; then
-        echo "Missing action" >&2
-        return 1
-    fi
-    case $action in
-        '') return 1;;
-        *)
-        if [[ -n ${_pkg_action_map[$action]} ]]; then
-            IFS=' '
-            local cmds=(${_pkg_action_map[$action]})
-            IFS=
-            ${cmds[@]} $@
-        else
-            echo "unrecognized action $action" >&2
-        fi
-        ;;
-    esac
-}
 
+    if [[ ${#hits[@]} -gt 1 ]]; then
+        echo "More than 1 actions matched: "${hits[@]} >&2
+        return 5
+    elif [[ ${#hits[@]} -eq 0 ]]; then
+        echo "No action matched." >&2
+        return 5
+    else
+        match=${hits[0]}
+    fi
+
+    IFS=' '
+    local cmds=(${_pkg_action_map[$match]})
+    IFS=
+    ${cmds[@]} $@
+}
 
 # if we are executed directly
 [[ "${BASH_SOURCE[0]}" == "${0}" ]] && pkg $@
