@@ -2,7 +2,7 @@
 
 wname=$1
 act=$(xdotool getactivewindow)
-wid=$(xdotool search --limit 1 --name $wname)
+wid=$(xdotool search --limit 1 --name ^$wname$)
 
 unmap() {
     xdotool windowunmap $wid
@@ -12,8 +12,9 @@ map() {
         # window is not created
         sakura -n 0 -d ~ -x tmux -l -t "$wname" -m -s 
     else
-        xdotool windowmap $wid
-        # wmctrl -i -r $wid -b add,fullscreen & wmctrl -i -R $wid
+        xdotool windowmap $wid # windowstate --add fullscreen $wid
+        wmctrl -i -r $wid -b add,fullscreen &
+        wmctrl -i -R $wid
     fi
 }
 
