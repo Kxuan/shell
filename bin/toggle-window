@@ -10,7 +10,15 @@ unmap() {
 map() {
     if [[ -z $wid ]]; then
         # window is not created
-        sakura -n 0 -d ~ -x tmux -l -t "$wname" -m -s 
+        shell="tmux"
+        count=$(tmux ls | wc -l)
+        case $count in 
+            0) shell="tmux new-session" ;;
+            1) shell="tmux attach-session" ;;
+            *) shell="tmux attach-session \; choose-session \"attach-session -t '%%'\"";;
+        esac
+        sakura -n 0 -d ~ -x "$shell" -l -t "$wname" -m -s 
+
     else
         xdotool windowmap $wid # windowstate --add fullscreen $wid
         wmctrl -i -r $wid -b add,fullscreen &
