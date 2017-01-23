@@ -12,7 +12,8 @@ proxy_setup() {
 proxy_start() {
     local PROXY_LOCAL_ADDRESS PROXY_REMOTE_HOST PROXY_REMOTE_ADDRESS
     _proxy_arg
-    ssh ${PROXY_REMOTE_HOST} -NnCf -L${PROXY_LOCAL_ADDRESS}:${PROXY_REMOTE_ADDRESS}
+
+    env -i bash --norc --noprofile -lc "cd /;exec ssh ${PROXY_REMOTE_HOST} -NnCf -L${PROXY_LOCAL_ADDRESS}:${PROXY_REMOTE_ADDRESS}"
 }
 proxy_stop() {
     local PROXY_LOCAL_ADDRESS PROXY_REMOTE_HOST PROXY_REMOTE_ADDRESS
