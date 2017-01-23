@@ -15,7 +15,7 @@ __pkg_complete_binary() {
      done < <(pkgfile -rv '/s?bin/'$1'\w*$') 
 }
 __pkg_action_match() {
-    bash -ic '. `which pkg`; _pkg_action_match "'$1'"'
+    bash --noprofile --norc -i -c '. `which pkg`; _pkg_action_match "'$1'"'
 }
 __pkg_complete() {
     local cur=$2
