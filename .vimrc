@@ -1,7 +1,7 @@
 set nocompatible
 
 set nu
-colorscheme eldar
+colorscheme wombat256dave
 set mouse=a
 set autoindent
 set shiftwidth=4
