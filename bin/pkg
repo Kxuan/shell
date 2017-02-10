@@ -138,7 +138,7 @@ declare -Ag _pkg_action_map=(
 
 ["update"]="sudo $PACKAGE_MANAGER -Sy"
 ["install"]="_pkg_install_package"
-["info"]="$PACKAGE_MANAGER -Si"
+["show"]="$PACKAGE_MANAGER -Si"
 
 ["remove"]="sudo $PACKAGE_MANAGER -Rsc"
 ["uninstall"]="sudo $PACKAGE_MANAGER -Rsc"
