@@ -9,6 +9,11 @@ if [[ -z $PACKAGE_MANAGER ]]; then
         PACKAGE_MANAGER=pacman
     fi
 fi
+sudo() {
+    if \which sudo >/dev/null 2>&1; then
+        sudo "$@"
+    fi
+}
 _pkg_search_binary() {
     pkgfile -srv '\/s?bin\/'$1'$'
 }
@@ -90,9 +95,9 @@ Warning: The $PACKAGE_MANAGER cache will be erased, regardless upgrade successfu
     fi
 
     if [[ $PACKAGE_MANAGER == 'yaourt' ]]; then
-        yaourt -S -u -yy --force -a
+        yaourt -S -u -yy --force -a --noconfirm --needed
     else
-        sudo $PACKAGE_MANAGER -S -u -yy --force
+        sudo $PACKAGE_MANAGER -S -u -yy --force --noconfirm --needed
     fi
 }
 
