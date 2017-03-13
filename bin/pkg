@@ -10,8 +10,12 @@ if [[ -z $PACKAGE_MANAGER ]]; then
     fi
 fi
 sudo() {
-    if \which sudo >/dev/null 2>&1; then
-        sudo "$@"
+    if [[ $UID -eq 0 ]]; then
+        "$@"
+    elif \which sudo >/dev/null 2>&1; then
+        `which sudo` "$@"
+    else
+        echo "root required"
     fi
 }
 _pkg_search_binary() {
