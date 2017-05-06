@@ -2,7 +2,7 @@
 
 [[ $- != *i* ]] && return
 #PS1='[\u@\h \W]\$ '
-
+export PATH="$PATH:$HOME/bin"
 # Unlimit bash history size
 HISTSIZE=-1
 # remove spaces from bash history
