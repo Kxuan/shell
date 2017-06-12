@@ -91,9 +91,7 @@ options:
 }
 _pkg_system_upgrade() {
     sudo -v
-    read -N 1 -p "Are you sure upgrade the system? 
-Warning: The $PACKAGE_MANAGER cache will be erased, regardless upgrade successful or not.
-(y/N)"
+    read -N 1 -p "Are you sure upgrade the system? (y/N)"
     if [[ $REPLY != 'y' ]] && [[ $REPLY != 'Y' ]]; then
         return 2
     fi
