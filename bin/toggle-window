@@ -1,33 +1,27 @@
 #!/bin/bash
+set -x
+title="sakura - tmux"
+lockfile="$XDG_RUNTIME_DIR"/toggle-sakura
 
-wname=$1
-act=$(xdotool getactivewindow)
-wid=$(xdotool search --limit 1 --name ^$wname$)
+exec {lock}>$lockfile
+flock $lock
 
-unmap() {
-    xdotool windowunmap $wid
-}
-map() {
-    if [[ -z $wid ]]; then
-        # window is not created
-        shell="tmux"
-        count=$(tmux ls | wc -l)
-        case $count in 
-            0) shell="tmux new-session" ;;
-            1) shell="tmux attach-session" ;;
-            *) shell="tmux attach-session \; choose-session \"attach-session -t '%%'\"";;
-        esac
-        sakura -n 0 -d ~ -x "$shell" -l -t "$wname" -m -s 
-
+activeid=$(xdotool getactivewindow)
+wid=$(xdotool search --name "$title")
+if [[ $? -eq 0 ]]; then
+    if [[ $wid -eq $activeid ]]; then
+        echo "Close window"
+        xdotool windowkill $wid
     else
-        xdotool windowmap $wid # windowstate --add fullscreen $wid
-        wmctrl -i -r $wid -b add,fullscreen &
-        wmctrl -i -R $wid
+        echo "Active window"
+        xdotool windowactivate --sync $wid
     fi
-}
-
-if [[ $act -eq $wid ]]; then
-    unmap
 else
-    map
+    echo "Launch sakura"
+    if tmux list-session &>/dev/null; then
+        exec sakura -t "$title" -s -x "tmux attach" {lock}>&-
+    else
+        exec sakura -t "$title" -s -x "tmux new-session" {lock}>&-
+    fi
 fi
+

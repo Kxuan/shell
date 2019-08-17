@@ -1,11 +1,3 @@
-# Lines configured by zsh-newuser-install
-if [[ $(readlink -f /proc/$PPID/exe) == '/usr/bin/sakura' ]]; then
-	if tmux list-session; then
-		exec tmux attach-session
-	else
-		exec tmux new-session
-	fi
-fi
 HISTFILE=~/.histfile
 HISTSIZE=9999999
 SAVEHIST=99999999
@@ -27,4 +19,3 @@ powerline-daemon -q
 alias ls='ls --color=auto'
 alias grep='grep --color=auto'
 export EDITOR=vim
-alias relay='sshnopass ssh zhaizhaoxuan@relay.xiaomi.com'
