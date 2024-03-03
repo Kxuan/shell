@@ -1,0 +1,18 @@
+[init]
+	defaultBranch = master
+[user]
+	name = Zhai Zhaoxuan
+	email = kxuanobj@gmail.com
+[commit]
+	gpgSign = true
+	verbose = true
+[checkout]
+	workers = 2
+[fetch]
+	parallel = 0
+[rebase]
+	autoStash = true
+[status]
+	showStash = true
+[submodule]
+	fetchJobs = 4
