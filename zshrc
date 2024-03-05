@@ -17,6 +17,8 @@ source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zs
 source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
 source /usr/lib/python3.11/site-packages/powerline/bindings/zsh/powerline.zsh
 
+export SSH_AUTH_SOCK=$XDG_RUNTIME_DIR/gnupg/S.gpg-agent.ssh
+
 alias ls='ls --color=auto'
 alias grep='grep --color=auto'
 
