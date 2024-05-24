@@ -15,9 +15,9 @@ compinit
 
 source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
-source /usr/lib/python3.11/site-packages/powerline/bindings/zsh/powerline.zsh
+source /usr/lib/python3.12/site-packages/powerline/bindings/zsh/powerline.zsh
 
-export SSH_AUTH_SOCK=$XDG_RUNTIME_DIR/gnupg/S.gpg-agent.ssh
+export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)
 
 alias ls='ls --color=auto'
 alias grep='grep --color=auto'

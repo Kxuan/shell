@@ -16,3 +16,5 @@
 	showStash = true
 [submodule]
 	fetchJobs = 4
+[core]
+	excludesfile = ~/.config/git/excludes

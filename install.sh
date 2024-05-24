@@ -16,7 +16,6 @@ function install() {
 function dot_file() {
     install "$1" ."$1"
 }
-dot_file gitconfig
 dot_file tmux.conf
 dot_file vimrc
 dot_file zshrc
