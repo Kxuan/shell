@@ -1,8 +1,8 @@
 [init]
 	defaultBranch = master
 [user]
-	name = Zhai Zhaoxuan
-	email = kxuanobj@gmail.com
+	name = Zhaoxuan Zhai
+	email = zhai.zhaoxuan@canonical.com
 [commit]
 	gpgSign = true
 	verbose = true

@@ -1,4 +1,5 @@
-source /usr/lib/python3.12/site-packages/powerline/bindings/vim/plugin/powerline.vim
+source /usr/share/powerline/bindings/vim/plugin/powerline.vim
+
 set laststatus=2
 set showtabline=2
 set noshowmode

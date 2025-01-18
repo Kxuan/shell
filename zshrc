@@ -15,13 +15,13 @@ compinit
 
 source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
-source /usr/lib/python3.12/site-packages/powerline/bindings/zsh/powerline.zsh
+source /usr/share/powerline/bindings/zsh/powerline.zsh
 
 export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)
 
 alias ls='ls --color=auto'
 alias grep='grep --color=auto'
 
-export http_proxy=http://10.0.1.5:8118
-export https_proxy=http://10.0.1.5:8118
-export no_proxy='127.0.0.0/8,192.168.0.0/16,172.16.0.0/12,10.0.0.0/8,localhost,.local,.kx'
+#export http_proxy=http://10.0.1.5:8118
+#export https_proxy=http://10.0.1.5:8118
+#export no_proxy='127.0.0.0/8,192.168.0.0/16,172.16.0.0/12,10.0.0.0/8,localhost,.local,.kx'
